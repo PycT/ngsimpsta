@@ -19,9 +19,8 @@ with NgsDB() as db:
 
     records = db.runQuery(query)
 
-with open(ngs_config.infoFilePath, "w") as info:
-    for record in records:
-        info.write("{}, {}, until {}, reason: {}, {}\n".format(
-            *record
-        ))
+for record in records:
+    print("{}, {}, until {}, reason: {}, {}\n".format(
+        *record
+    ))
 
