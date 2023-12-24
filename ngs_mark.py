@@ -57,9 +57,14 @@ def markBadIPs():
         frequencyFelons = db.runQuery(frequencyPerMinBanQuery)
         for felon in frequencyFelons:
             felonRecord = {}
+            felonMarked = False
             felonRecord["IP_ADDRESS"] = felon[0]
+            felonRecord["STATUS"] = db.STATUS_BANNED
+            felonMarked = db.recordExists(felonRecord, db.jailTableName)
             felonRecord["STATUS"] = db.STATUS_TO_BE_BANNED
-            if not db.recordExists(felonRecord, db.jailTableName):
+            if not felonMarked:
+                felonMarked = db.recordExists(felonRecord, db.jailTableName)
+            if not felonMarked:
                 felonRecord["REASON"] = db.REASON_FREQUENCY
                 felonRecord["REASON_DETAILS"] = "{}/min".format(felon[1])
                 felonRecord["RELEASE_DATE"] = releaseDate4Frequency
@@ -81,9 +86,14 @@ def markBadIPs():
                         urlTrespassers[ip]["count"] += 1
                         if urlTrespassers[ip]["count"] > ngs_config.suspiciousURLsTolerance:
                             felonRecord = {}
+                            felonMarked = False
                             felonRecord["IP_ADDRESS"] = ip
+                            felonRecord["STATUS"] = db.STATUS_BANNED
+                            felonMarked = db.recordExists(felonRecord, db.jailTableName)
                             felonRecord["STATUS"] = db.STATUS_TO_BE_BANNED
-                            if not db.recordExists(felonRecord, db.jailTableName):
+                            if not felonMarked:
+                                felonMarked = db.recordExists(felonRecord, db.jailTableName)
+                            if not felonMarked:
                                 felonRecord["REASON"] = db.REASON_WRONG_URLS
                                 felonRecord["REASON_DETAILS"] = urlTrespassers[ip]["REASON_DETAILS"]
                                 felonRecord["RELEASE_DATE"] = releaseDate4SuspiciousUrl
